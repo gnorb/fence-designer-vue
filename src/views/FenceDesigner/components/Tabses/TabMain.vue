@@ -1,0 +1,237 @@
+<template>
+    <b-row>
+        <b-col>
+            <b-card class="mt-4">
+                <b-row>
+                    <b-col>
+                        <b-btn variant="primary" class="float-left mr-1" @click="addGroupOfPostsAndSpans()">
+                            <b-icon-plus-circle-fill style="margin-top: -3px;" class="mr-2"></b-icon-plus-circle-fill>{{ $t('views.fenceDesigner.tabMain.addGroupOfPostsAndSpans') }}
+                        </b-btn>
+                        <template v-for="(object, index) in fdConfigurationObjectsButtons">
+                            <b-btn variant="success" class="float-left mr-1" v-bind:key="'object-' + index" @click="addNewTab(object.id)">
+                                <b-icon-plus-circle-fill style="margin-top: -3px;" class="mr-2"></b-icon-plus-circle-fill>{{ $t(object.name) }}
+                            </b-btn>
+                        </template>
+                    </b-col>
+                </b-row>
+                <b-row class="mt-3">
+                    <b-col>
+                        <b-tabs content-class="mt-3" v-model="tabIndex" v-if="tabs.length > 0">
+                            <template v-for="(tabObject, index) in tabs">
+                                <b-tab :title="$t(tabObject.name)" v-bind:key="'tabObject-' + index" lazy>
+                                    <b-row>
+                                        <b-col>
+                                            <b-btn size="sm" variant="danger" class="float-right" @click="closeTab(index)" v-if="(index + 1) === tabs.length">
+                                                {{ $t('remove') }}
+                                            </b-btn>
+                                            <b-btn size="sm" variant="danger" class="float-right" v-else disabled v-tooltip.top-center="$t('views.fenceDesigner.tabMain.disabledRemoveTooltip')">
+                                                {{ $t('remove') }}
+                                            </b-btn>
+                                        </b-col>
+                                    </b-row>
+                                    <template v-if="!tabObject.groupped">
+                                        <template v-if="tabObject.objectTypeId === 1">
+                                            <TabGate :tabObject="tabObject"
+                                                     :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                     :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                            ></TabGate>
+                                        </template>
+                                        <template v-else-if="tabObject.objectTypeId === 2">
+                                            <TabWicket :tabObject="tabObject"
+                                                       :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                       :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                            ></TabWicket>
+                                        </template>
+                                        <template v-else-if="tabObject.objectTypeId === 3">
+                                            <TabSpan :tabObject="tabObject"
+                                                     :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                     :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                                     :groupEdit="groupEdit"
+                                            ></TabSpan>
+                                        </template>
+                                        <template v-else-if="tabObject.objectTypeId === 4">
+                                            <TabPost :tabObject="tabObject"
+                                                     :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                     :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                                     :groupEdit="groupEdit"
+                                            ></TabPost>
+                                        </template>
+                                    </template>
+                                    <template v-else-if="groupped">
+
+                                    </template>
+                                </b-tab>
+                            </template>
+                        </b-tabs>
+                    </b-col>
+                </b-row>
+            </b-card>
+            <ModalGroupOfPostsAndSpans :fdConfigurationObjects="fdConfigurationObjects"
+                                       :globalSettings="globalSettings"
+            ></ModalGroupOfPostsAndSpans>
+        </b-col>
+    </b-row>
+</template>
+
+<script>
+import TabGate from './TabGate'
+import TabWicket from './TabWicket'
+import TabSpan from './TabSpan'
+import TabPost from './TabPost'
+import { getSectionMaxWidth, getAllObjectsWidth } from '../../functions/tabses'
+import ModalGroupOfPostsAndSpans from './ModalGroupOfPostsAndSpans'
+
+export default {
+    name: 'TabMain',
+    components: {
+        TabGate,
+        TabWicket,
+        TabPost,
+        TabSpan,
+        ModalGroupOfPostsAndSpans
+    },
+    props: {
+        fdConfigurationObjects: {
+            type: Array,
+            required: true
+        },
+        globalSettings: {
+            type: Object,
+            required: true
+        }
+    },
+    data () {
+        return {
+            tabs: [],
+            fdConfigurationObjectsButtons: [],
+            tabIndex: 0,
+            groups: []
+        }
+    },
+    computed: {
+        //
+    },
+    watch: {
+        tabs: {
+            handler: function() {
+                this.updateButtonsStates()
+                this.$emit('input', this.tabs)
+            },
+            deep: true
+        }
+    },
+    created () {
+        this.updateButtonsStates()
+    },
+    methods: {
+        updateButtonsStates () {
+            let buttonsToDisplay = []
+            let typesToDisplay = []
+            let lastIndex = this.tabs.length - 1
+            if (this.tabs.length === 0) {
+                typesToDisplay.push(4)
+            } else if (this.tabs[lastIndex].objectTypeId === 4) {
+                typesToDisplay.push(3)
+                typesToDisplay.push(2)
+                typesToDisplay.push(1)
+            } else {
+                typesToDisplay.push(4)
+            }
+            for (let i in this.fdConfigurationObjects) {
+                if (typesToDisplay.includes(this.fdConfigurationObjects[i].objectType.id)) {
+                    buttonsToDisplay.push(this.fdConfigurationObjects[i])
+                }
+            }
+            this.fdConfigurationObjectsButtons = buttonsToDisplay
+        },
+        closeTab(index) {
+            this.tabs.splice(index, 1)
+        },
+        addNewTab (id) {
+            let tabs = JSON.parse(JSON.stringify(this.tabs))
+            tabs.push(this.createNewObject(id))
+            let allObjectsWidth = getAllObjectsWidth(tabs)
+            let sectionMaxWidth = getSectionMaxWidth(tabs, this.globalSettings.sectionWidth)
+
+            if (sectionMaxWidth < allObjectsWidth) {
+                // this.$bvModal
+                //     .msgBoxConfirm('Please confirm that you want to delete everything.', {
+                //         title: 'Please Confirm',
+                //         size: 'sm',
+                //         buttonSize: 'sm',
+                //         okVariant: 'danger',
+                //         okTitle: 'YES',
+                //         cancelTitle: 'NO',
+                //         footerClass: 'p-2',
+                //         hideHeaderClose: false,
+                //         centered: true
+                //     })
+                //     .then(value => {
+                //         console.log(value)
+                //     })
+                //     .catch(err => {
+                //         // An error occurred
+                //         console.log(err)
+                //     })
+                alert('przekroczono maksymalną szerokość')
+            } else {
+                this.tabs = tabs
+            }
+        },
+        getAllObjectsWidthLocal () {
+            return getAllObjectsWidth(this.tabs)
+        },
+        getSectionMaxWidthLocal () {
+            return getSectionMaxWidth(this.tabs, this.globalSettings.sectionWidth)
+        },
+        createNewObject (id) {
+            let objects = this.fdConfigurationObjects
+            let newObject = {}
+            for (let i in objects) {
+                if (objects[i].id === id) {
+                    let object = objects[i]
+                    newObject.name = object.name
+                    newObject.objectTypeId = object.objectType.id
+                    newObject.width = object.defaultWidth
+                    newObject.height = object.defaultHeight
+                    newObject.brick = object.brick
+                    newObject.roof = object.roof
+                    newObject.global = '1'
+                    newObject.group = 1
+                    break
+                }
+            }
+
+            return newObject
+        },
+        addGroupOfPostsAndSpans () {
+            this.$store.state.modals.FenceDesigner.ModalGroupOfPostsAndSpans.open = true
+            // let objects = this.fdConfigurationObjects
+            // let newObject = {}
+            // for (let i in objects) {
+            //     if (objects[i].objectType.id === 4) {
+            //         let object = objects[i]
+            //         newObject.name = object.name
+            //         newObject.objectTypeId = object.objectType.id
+            //         newObject.width = object.defaultWidth
+            //         newObject.height = object.defaultHeight
+            //         newObject.brick = object.brick
+            //         newObject.roof = object.roof
+            //         newObject.groupped = true
+            //         newObject.group = this.groups.length
+            //         this.tabs.push(newObject)
+            //         break
+            //     }
+            // }
+        },
+        groupEdit (object) {
+            for (let i in this.tabs) {
+                if (this.tabs[i].group === object.group && this.tabs[i].global === '1' && this.tabs[i].objectTypeId === object.objectTypeId) {
+                    this.tabs[i].width = object.width
+                    this.tabs[i].height = object.height
+                }
+            }
+        }
+    }
+}
+</script>
