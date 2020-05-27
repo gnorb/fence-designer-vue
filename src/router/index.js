@@ -5,7 +5,6 @@ import Login from '../views/Layout/Login'
 import FenceConfiguration from '../views/FenceConfiguration/Index'
 import FenceDesignerIndex from '../views/FenceDesigner/Index'
 import FenceConfigurationShow from '../views/FenceDesignerBundle/FDConfiguration/Show'
-// import i18n from './assets/languages/languages.js'
 import i18n from '../assets/languages/languages.js'
 
 Vue.use(VueRouter)
@@ -18,7 +17,7 @@ Vue.use(i18n)
       component: Login,
       meta: {
         auth: false,
-        title: 'liew'
+        title: 'login'
       }
     },
     {
