@@ -12,7 +12,7 @@
 
 <script>
 import { drawCanvas } from '../functions/drawCanvas'
-import {getAllObjectsWidth, getSectionMaxWidth} from "../functions/tabses";
+import {getAllObjectsWidth, getSectionMaxWidth} from '../functions/tabses'
 export default {
     name: 'Canvas',
     props: {

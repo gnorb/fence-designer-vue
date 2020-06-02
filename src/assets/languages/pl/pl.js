@@ -49,6 +49,22 @@ const pl = {
             tabMain: {
                 disabledRemoveTooltip: 'Można usunąć tylko ostatni obiekt ogrodzenia',
                 addGroupOfPostsAndSpans: 'Stwórz grupę słupków i przęseł',
+                group: 'Grupa',
+                tabGroup: {
+                    width: 'Szerokość grupy obiektów',
+                    defaultFirstPost: 'Pierwszy słupek',
+                    defaultPost: 'Słupki wewnętrzne',
+                    defaultLastPost: 'Ostatni słupek',
+                    postData: {
+                        width: 'Szerokość',
+                        height: 'Wysokość'
+                    },
+                    defaultSpan: 'Przęsła',
+                    spanData: {
+                        width: 'Szerokość',
+                        height: 'Wysokość'
+                    }
+                },
                 tabPost: {
                     tabObject: {
                         height: 'Wysokość słupka (w bloczkach, z daszkiem)',

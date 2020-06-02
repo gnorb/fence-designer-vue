@@ -17,8 +17,8 @@
                 <b-row class="mt-3">
                     <b-col>
                         <b-tabs content-class="mt-3" v-model="tabIndex" v-if="tabs.length > 0">
-                            <template v-for="(tabObject, index) in tabs">
-                                <b-tab :title="$t(tabObject.name)" v-bind:key="'tabObject-' + index" lazy>
+                            <template v-for="(tab, index) in tabs">
+                                <b-tab :title="tab.name" v-bind:key="'tab-' + index" lazy>
                                     <b-row>
                                         <b-col>
                                             <b-btn size="sm" variant="danger" class="float-right" @click="closeTab(index)" v-if="(index + 1) === tabs.length">
@@ -29,36 +29,32 @@
                                             </b-btn>
                                         </b-col>
                                     </b-row>
-                                    <template v-if="!tabObject.groupped">
-                                        <template v-if="tabObject.objectTypeId === 1">
-                                            <TabGate :tabObject="tabObject"
-                                                     :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
-                                                     :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
-                                            ></TabGate>
-                                        </template>
-                                        <template v-else-if="tabObject.objectTypeId === 2">
-                                            <TabWicket :tabObject="tabObject"
-                                                       :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
-                                                       :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
-                                            ></TabWicket>
-                                        </template>
-                                        <template v-else-if="tabObject.objectTypeId === 3">
-                                            <TabSpan :tabObject="tabObject"
-                                                     :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
-                                                     :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
-                                                     :groupEdit="groupEdit"
-                                            ></TabSpan>
-                                        </template>
-                                        <template v-else-if="tabObject.objectTypeId === 4">
-                                            <TabPost :tabObject="tabObject"
-                                                     :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
-                                                     :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
-                                                     :groupEdit="groupEdit"
-                                            ></TabPost>
-                                        </template>
+                                    <TabGroup v-if="tab.type === 0" :tab="tab"></TabGroup>
+                                    <template v-else-if="tab.type === 1">
+                                        <TabGate :tabObject="tab.objects[0]"
+                                                 :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                 :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                        ></TabGate>
                                     </template>
-                                    <template v-else-if="groupped">
-
+                                    <template v-else-if="tab.type === 2">
+                                        <TabWicket :tabObject="tab.objects[0]"
+                                                   :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                   :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                        ></TabWicket>
+                                    </template>
+                                    <template v-else-if="tab.type === 3">
+                                        <TabSpan :tabObject="tab.objects[0]"
+                                                 :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                 :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                                 :groupEdit="groupEdit"
+                                        ></TabSpan>
+                                    </template>
+                                    <template v-else-if="tab.type === 4">
+                                        <TabPost :tabObject="tab.objects[0]"
+                                                 :getAllObjectsWidthLocal="getAllObjectsWidthLocal"
+                                                 :getSectionMaxWidthLocal="getSectionMaxWidthLocal"
+                                                 :groupEdit="groupEdit"
+                                        ></TabPost>
                                     </template>
                                 </b-tab>
                             </template>
@@ -78,6 +74,7 @@ import TabGate from './TabGate'
 import TabWicket from './TabWicket'
 import TabSpan from './TabSpan'
 import TabPost from './TabPost'
+import TabGroup from './TabGroup'
 import { getSectionMaxWidth, getAllObjectsWidth } from '../../functions/tabses'
 import ModalGroupOfPostsAndSpans from './ModalGroupOfPostsAndSpans'
 
@@ -88,6 +85,7 @@ export default {
         TabWicket,
         TabPost,
         TabSpan,
+        TabGroup,
         ModalGroupOfPostsAndSpans
     },
     props: {
@@ -187,6 +185,16 @@ export default {
         createNewObject (id) {
             let objects = this.fdConfigurationObjects
             let newObject = {}
+            let newTab = {
+                name: this.$t('views.fenceDesigner.tabMain.group'),
+                objects: [],
+                type: 0,
+                width: 0,
+                defaultFirstPost: null,
+                defaultPost: null,
+                defaultLastPost: null,
+                defaultSpan: null
+            }
             for (let i in objects) {
                 if (objects[i].id === id) {
                     let object = objects[i]
@@ -196,33 +204,57 @@ export default {
                     newObject.height = object.defaultHeight
                     newObject.brick = object.brick
                     newObject.roof = object.roof
-                    newObject.global = '1'
-                    newObject.group = 1
+                    newTab.name = object.name
+                    newTab.type = object.objectType.id
+                    newTab.objects.push(newObject)
                     break
                 }
             }
 
-            return newObject
+            return newTab
         },
         addGroupOfPostsAndSpans () {
-            this.$store.state.modals.FenceDesigner.ModalGroupOfPostsAndSpans.open = true
-            // let objects = this.fdConfigurationObjects
-            // let newObject = {}
-            // for (let i in objects) {
-            //     if (objects[i].objectType.id === 4) {
-            //         let object = objects[i]
-            //         newObject.name = object.name
-            //         newObject.objectTypeId = object.objectType.id
-            //         newObject.width = object.defaultWidth
-            //         newObject.height = object.defaultHeight
-            //         newObject.brick = object.brick
-            //         newObject.roof = object.roof
-            //         newObject.groupped = true
-            //         newObject.group = this.groups.length
-            //         this.tabs.push(newObject)
-            //         break
-            //     }
-            // }
+            // this.$store.state.modals.FenceDesigner.ModalGroupOfPostsAndSpans.open = true
+            let objects = this.fdConfigurationObjects
+            let newObject = {}
+            let newTab = {
+                name: this.$t('views.fenceDesigner.tabMain.group'),
+                objects: [],
+                type: 0,
+                width: 0,
+                defaultFirstPost: null,
+                defaultPost: null,
+                defaultLastPost: null,
+                defaultSpan: null
+            }
+            for (let i in objects) {
+                if (objects[i].objectType.id === 4) {
+                    let object = objects[i]
+                    newObject = {}
+                    newObject.name = object.name
+                    newObject.objectTypeId = object.objectType.id
+                    newObject.width = object.defaultWidth
+                    newObject.height = object.defaultHeight
+                    newObject.brick = object.brick
+                    newObject.roof = object.roof
+                    newTab.width = parseInt(object.brick.width) * parseInt(object.defaultWidth)
+                    newTab.objects.push(newObject)
+                    newTab.defaultFirstPost = Object.assign({}, newObject)
+                    newTab.defaultPost = Object.assign({}, newObject)
+                    newTab.defaultLastPost = Object.assign({}, newObject)
+                } else if (objects[i].objectType.id === 3) {
+                    let object = objects[i]
+                    newObject = {}
+                    newObject.name = object.name
+                    newObject.objectTypeId = object.objectType.id
+                    newObject.width = object.defaultWidth
+                    newObject.height = object.defaultHeight
+                    newObject.brick = object.brick
+                    newObject.roof = object.roof
+                    newTab.defaultSpan = newObject
+                }
+            }
+            this.tabs.push(newTab)
         },
         groupEdit (object) {
             for (let i in this.tabs) {
