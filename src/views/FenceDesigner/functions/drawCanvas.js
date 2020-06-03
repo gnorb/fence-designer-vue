@@ -1,4 +1,4 @@
-import { drawMainCompartment, drawObjectsCompartment } from './canvas/compartments'
+import { drawMainCompartment, drawTabsCompartment } from './canvas/compartments'
 import { drawFenceObjects } from './canvas/fenceObjects'
 
 export function drawCanvas (canvas, canvasHTML, globalSettings, tabs) {
@@ -10,6 +10,7 @@ export function drawCanvas (canvas, canvasHTML, globalSettings, tabs) {
     }
     canvas.clearRect(0, 0, canvasHTML.width, canvasHTML.height)
     drawMainCompartment(canvas, canvasHTML, globalSettings)
-    drawObjectsCompartment(canvas, canvasHTML, globalSettings, tabObjects)
+    // drawObjectsCompartment(canvas, canvasHTML, globalSettings, tabObjects)
+    drawTabsCompartment(canvas, canvasHTML, globalSettings, tabs)
     drawFenceObjects(canvas, canvasHTML, globalSettings, tabObjects)
 }

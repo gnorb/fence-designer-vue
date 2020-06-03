@@ -10,6 +10,10 @@
                     <label>{{ $t('views.fenceDesigner.tabMain.tabSpan.tabObject.width') }} ({{ widthCentimeters }} {{ $store.state.unitOfMeasure }}):</label>
                     <b-form-input v-model="tabObject.width" min="1" type="number" step="1" :placeholder="$t('views.fenceDesigner.tabMain.tabSpan.tabObject.width')"></b-form-input>
                 </b-col>
+                <b-col>
+                    <label>{{ $t('views.fenceDesigner.tabMain.tabSpan.tabObject.level') }}:</label>
+                    <b-form-input v-model="tabObject.level" min="0" type="number" step="1" :placeholder="$t('views.fenceDesigner.tabMain.tabSpan.tabObject.level')"></b-form-input>
+                </b-col>
             </b-row>
         </b-col>
     </b-row>

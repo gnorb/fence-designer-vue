@@ -18,7 +18,8 @@ export function drawFenceObjects (canvas, canvasHTML, globalSettings, tabObjects
 function drawGridInsideObject(canvas, canvasHTML, globalSettings, previousObject, object, nextObject, point) {
     let objectWidth = parseInt(object.width) * parseInt(object.brick.width)
 
-    let bottom = canvasHTML.height - parseInt(globalSettings.margin)
+    let levelDistanceHeight = parseInt(object.brick.height) * parseInt(object.level)
+    let bottom = canvasHTML.height - parseInt(globalSettings.margin) - levelDistanceHeight
     for (let i = 0; i < parseInt(object.height); i++) {
         let brickHeight = parseInt(object.brick.height)
         let brickWidth = parseInt(object.brick.width)
@@ -32,7 +33,7 @@ function drawGridInsideObject(canvas, canvasHTML, globalSettings, previousObject
 
         let left = point
         for (let j = 0; j <= (parseInt(object.width)); j++) {
-            if (globalSettings.configurationId === 1) {
+            if (globalSettings.configurationId === 1) { // ogrodzenia splitowane
                 if (j === 0 && (previousObject === undefined || (previousObject && previousObject.height <= i))) {
                     // jeśli jest to pierwszy obiekt w ogrodzeniu, uzupełniam puste kreski od skrajnej krawędzi początka
                     drawObjectVerticalLine(canvas, left, bottom + brickHeight, bottom)
@@ -48,7 +49,7 @@ function drawGridInsideObject(canvas, canvasHTML, globalSettings, previousObject
                         drawObjectVerticalLine(canvas, left + object.brick.widthRight, bottom + brickHeight, bottom)
                     }
                 }
-            } else if (globalSettings.configurationId === 2) {
+            } else if (globalSettings.configurationId === 2) { // ogrodzenia gładkie
                 drawObjectVerticalLine(canvas, left, bottom + brickHeight, bottom)
             }
             left += brickWidth

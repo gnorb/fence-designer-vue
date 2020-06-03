@@ -135,9 +135,16 @@ export default {
             // } else {
             //     typesToDisplay.push(4)
             // }
-            if (this.tabs.length > 0 && this.tabs[lastIndex].type === 0) {
+            if (this.tabs.length > 0 && (this.tabs[lastIndex].type === 0 || this.tabs[lastIndex].type === 4)) {
                 typesToDisplay.push(2)
                 typesToDisplay.push(1)
+                typesToDisplay.push(3)
+            }
+            // else if (this.tabs.length > 0 && this.tabs[lastIndex].type !== 0) {
+            //     typesToDisplay.push(4)
+            // }
+            else {
+                typesToDisplay.push(4)
             }
             for (let i in this.fdConfigurationObjects) {
                 if (typesToDisplay.includes(this.fdConfigurationObjects[i].objectType.id)) {
@@ -188,7 +195,7 @@ export default {
         },
         createNewObject (id) {
             let objects = this.fdConfigurationObjects
-            let newObject = {}
+            // let newObject = {}
             let newTab = {
                 name: this.$t('views.fenceDesigner.tabMain.group'),
                 objects: [],
@@ -202,12 +209,7 @@ export default {
             for (let i in objects) {
                 if (objects[i].id === id) {
                     let object = objects[i]
-                    newObject.name = object.name
-                    newObject.objectTypeId = object.objectType.id
-                    newObject.width = object.defaultWidth
-                    newObject.height = object.defaultHeight
-                    newObject.brick = object.brick
-                    newObject.roof = object.roof
+                    let newObject = this.fillNewObject(object)
                     newTab.name = this.$t(object.name)
                     newTab.type = object.objectType.id
                     newTab.objects.push(newObject)
@@ -220,7 +222,6 @@ export default {
         addGroupOfPostsAndSpans () {
             // this.$store.state.modals.FenceDesigner.ModalGroupOfPostsAndSpans.open = true
             let objects = this.fdConfigurationObjects
-            let newObject = {}
             let newTab = {
                 name: this.$t('views.fenceDesigner.tabMain.group'),
                 objects: [],
@@ -234,28 +235,15 @@ export default {
             for (let i in objects) {
                 if (objects[i].objectType.id === 4) {
                     let object = objects[i]
-                    newObject = {}
-                    newObject.name = object.name
-                    newObject.objectTypeId = object.objectType.id
-                    newObject.width = object.defaultWidth
-                    newObject.height = object.defaultHeight
-                    newObject.brick = object.brick
-                    newObject.roof = object.roof
+                    let postObject = this.fillNewObject(objects[i])
+                    newTab.objects.push(postObject)
                     newTab.width = parseInt(object.brick.width) * parseInt(object.defaultWidth)
-                    newTab.objects.push(newObject)
-                    newTab.defaultFirstPost = Object.assign({}, newObject)
-                    newTab.defaultPost = Object.assign({}, newObject)
-                    newTab.defaultLastPost = Object.assign({}, newObject)
+                    newTab.level = 0
+                    newTab.defaultFirstPost = Object.assign({}, postObject)
+                    newTab.defaultPost = Object.assign({}, postObject)
+                    newTab.defaultLastPost = Object.assign({}, postObject)
                 } else if (objects[i].objectType.id === 3) {
-                    let object = objects[i]
-                    newObject = {}
-                    newObject.name = object.name
-                    newObject.objectTypeId = object.objectType.id
-                    newObject.width = object.defaultWidth
-                    newObject.height = object.defaultHeight
-                    newObject.brick = object.brick
-                    newObject.roof = object.roof
-                    newTab.defaultSpan = newObject
+                    newTab.defaultSpan = Object.assign({}, this.fillNewObject(objects[i]))
                 }
             }
             this.tabs.push(newTab)
@@ -267,6 +255,17 @@ export default {
                     this.tabs[i].height = object.height
                 }
             }
+        },
+        fillNewObject (object) {
+            let newObject = {}
+            newObject.name = object.name
+            newObject.objectTypeId = object.objectType.id
+            newObject.width = object.defaultWidth
+            newObject.height = object.defaultHeight
+            newObject.brick = object.brick
+            newObject.roof = object.roof
+            newObject.level = 0
+            return newObject
         }
     }
 }

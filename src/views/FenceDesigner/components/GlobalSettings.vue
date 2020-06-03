@@ -53,7 +53,7 @@ export default {
             globalSettings: {
                 configuration: null,
                 sectionWidth: 0,
-                margin: 20
+                margin: 25
             },
             showMore: true
         }

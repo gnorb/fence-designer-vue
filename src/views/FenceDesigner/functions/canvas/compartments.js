@@ -1,38 +1,69 @@
 import store from '../../../../store/index.js'
 
 export function drawMainCompartment (canvas, canvasHTML, globalSettings) {
-    drawCompartmentTop(canvas, canvasHTML, globalSettings)
+    // drawCompartmentTop(canvas, canvasHTML, globalSettings)
     drawCompartmentBottom(canvas, canvasHTML, globalSettings)
 }
 
-export function drawObjectsCompartment (canvas, canvasHTML, globalSettings, tabObjects) {
-    if (tabObjects.length > 0) {
-        let point = parseInt(globalSettings.margin)
-        // let Y1 = canvasHTML.height - parseInt(globalSettings.margin)
-        let Y2 = parseInt(globalSettings.margin)
-        let Y = parseInt(globalSettings.margin)
-        // drawDashCompartmentVertical(canvas, point, Y1, Y2)
-        for (let i in tabObjects) {
-            let objectType = tabObjects[i].objectTypeId
-            let objectWidth = 0
-
-            if (objectType === 4 || objectType === 3) {
-                objectWidth = (parseInt(tabObjects[i].width) * parseInt(tabObjects[i].brick.width))
-            } else if (objectType === 1 || objectType === 2) {
-                objectWidth = parseInt(tabObjects[i].width)
+export function drawTabsCompartment (canvas, canvasHTML, globalSettings, tabs) {
+    let point = parseInt(globalSettings.margin)
+    let Y = parseInt(globalSettings.margin)
+    for (let i in tabs) {
+        let width = 0
+        for (let j in tabs[i].objects) {
+            if (tabs[i].objects[j].objectTypeId === 3 || tabs[i].objects[j].objectTypeId === 4) {
+                width += (parseInt(tabs[i].objects[j].brick.width)) * (parseInt(tabs[i].objects[j].width))
+            } else if (tabs[i].objects[j].objectTypeId === 1 || tabs[i].objects[j].objectTypeId === 2) {
+                width += parseInt(tabs[i].objects[j].width)
             }
-
-            let X = point + objectWidth
-            // drawCompartmentDot(canvas, X, Y1)
-            drawCompartmentDot(canvas, X, Y2)
-            // drawDashCompartmentVertical(canvas, X, Y1, Y2)
-            let X1 = point
-            let X2 = point + objectWidth
-            drawHorizontalCompartmentLengthAboveLine(canvas, X1, X2, Y, objectWidth)
-            point += objectWidth
         }
+        let X1 = point
+        let X2 = point + width
+        drawCompartmentLine(canvas, X1, X2, Y, Y)
+        drawHorizontalCompartmentLengthAboveLine (canvas, X1, X2, Y, width)
+        point += width
     }
 }
+
+function drawCompartmentLine (canvas, X1, X2, Y1, Y2) {
+    canvas.beginPath()
+    canvas.strokeStyle = store.state.configuration.canvas.compartmentsColor
+    canvas.moveTo(X1, Y1)
+    canvas.lineTo(X2, Y2)
+    canvas.stroke()
+    drawCompartmentDot(canvas, X1, Y1)
+    drawCompartmentDot(canvas, X2, Y2)
+    // drawHorizontalCompartmentLengthUnderLine(canvas, X1, X2, Y, length)
+}
+
+// export function drawObjectsCompartment (canvas, canvasHTML, globalSettings, tabObjects) {
+//     if (tabObjects.length > 0) {
+//         let point = parseInt(globalSettings.margin)
+//         // let Y1 = canvasHTML.height - parseInt(globalSettings.margin)
+//         let Y2 = parseInt(globalSettings.margin)
+//         let Y = parseInt(globalSettings.margin)
+//         // drawDashCompartmentVertical(canvas, point, Y1, Y2)
+//         for (let i in tabObjects) {
+//             let objectType = tabObjects[i].objectTypeId
+//             let objectWidth = 0
+//
+//             if (objectType === 4 || objectType === 3) {
+//                 objectWidth = (parseInt(tabObjects[i].width) * parseInt(tabObjects[i].brick.width))
+//             } else if (objectType === 1 || objectType === 2) {
+//                 objectWidth = parseInt(tabObjects[i].width)
+//             }
+//
+//             let X = point + objectWidth
+//             // drawCompartmentDot(canvas, X, Y1)
+//             drawCompartmentDot(canvas, X, Y2)
+//             // drawDashCompartmentVertical(canvas, X, Y1, Y2)
+//             let X1 = point
+//             let X2 = point + objectWidth
+//             drawHorizontalCompartmentLengthAboveLine(canvas, X1, X2, Y, objectWidth)
+//             point += objectWidth
+//         }
+//     }
+// }
 
 // function drawDashCompartmentVertical (canvas, X, Y1, Y2) {
 //     canvas.beginPath()
@@ -47,7 +78,7 @@ export function drawObjectsCompartment (canvas, canvasHTML, globalSettings, tabO
 // }
 
 function drawCompartmentBottom (canvas, canvasHTML, globalSettings) {
-    let Y = canvasHTML.height - parseInt(globalSettings.margin)
+    let Y = canvasHTML.height - parseInt(globalSettings.margin) + 10
     let X1 = parseInt(globalSettings.margin)
     let X2 = canvasHTML.width - parseInt(globalSettings.margin)
     let length = canvasHTML.width - (2 * parseInt(globalSettings.margin))
@@ -62,19 +93,19 @@ function drawCompartmentBottom (canvas, canvasHTML, globalSettings) {
     drawHorizontalCompartmentLengthUnderLine(canvas, X1, X2, Y, length)
 }
 
-function drawCompartmentTop (canvas, canvasHTML, globalSettings) {
-    let Y = parseInt(globalSettings.margin)
-    let X1 = parseInt(globalSettings.margin)
-    let X2 = canvasHTML.width - parseInt(globalSettings.margin)
-
-    canvas.beginPath()
-    canvas.strokeStyle = store.state.configuration.canvas.compartmentsColor
-    canvas.moveTo(X1, Y)
-    canvas.lineTo(X2, Y)
-    canvas.stroke()
-    drawCompartmentDot(canvas, X1, Y)
-    drawCompartmentDot(canvas, X2, Y)
-}
+// function drawCompartmentTop (canvas, canvasHTML, globalSettings) {
+//     let Y = parseInt(globalSettings.margin)
+//     let X1 = parseInt(globalSettings.margin)
+//     let X2 = canvasHTML.width - parseInt(globalSettings.margin)
+//
+//     canvas.beginPath()
+//     canvas.strokeStyle = store.state.configuration.canvas.compartmentsColor
+//     canvas.moveTo(X1, Y)
+//     canvas.lineTo(X2, Y)
+//     canvas.stroke()
+//     drawCompartmentDot(canvas, X1, Y)
+//     drawCompartmentDot(canvas, X2, Y)
+// }
 
 function drawCompartmentDot (canvas, X, Y) {
     canvas.beginPath()

@@ -6,6 +6,10 @@
                     <label>{{ $t('views.fenceDesigner.tabMain.tabGroup.width') }} ({{ $store.state.unitOfMeasure }}):</label>
                     <b-form-input v-model="tab.width" type="number" :min="step" :step="step" :placeholder="$t('views.fenceDesigner.tabMain.tabGroup.width')"></b-form-input>
                 </b-col>
+                <b-col>
+                    <label>{{ $t('views.fenceDesigner.tabMain.tabGroup.level') }}:</label>
+                    <b-form-input v-model="tab.level" type="number" min="0" step="1" :placeholder="$t('views.fenceDesigner.tabMain.tabGroup.level')"></b-form-input>
+                </b-col>
             </b-row>
             <b-row>
                 <b-col>
@@ -118,6 +122,9 @@ export default {
         },
         'tab.defaultSpan.height': function () {
             this.swapSpans()
+        },
+        'tab.level': function () {
+            this.swapLevels()
         }
     },
     computed: {
@@ -148,6 +155,15 @@ export default {
                     this.tab.objects[i].width = this.tab.defaultSpan.width
                     this.tab.objects[i].height = this.tab.defaultSpan.height
                 }
+            }
+        },
+        swapLevels () {
+            this.tab.defaultSpan.level = this.tab.level
+            this.tab.defaultPost.level = this.tab.level
+            this.tab.defaultFirstPost.level = this.tab.level
+            this.tab.defaultLastPost.level = this.tab.level
+            for (let i in this.tab.objects) {
+                this.tab.objects[i].level = this.tab.level
             }
         },
         handleSectionWidthChange (sectionWidthNew, sectionWidthOld) {

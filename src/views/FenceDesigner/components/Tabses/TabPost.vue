@@ -3,23 +3,16 @@
         <b-col>
             <b-row>
                 <b-col>
-                    <b-form-checkbox
-                            v-model="tabObject.global"
-                            value="1"
-                            unchecked-value="0"
-                    >
-                        {{ $t('views.fenceDesigner.tabMain.tabPost.tabObject.global') }}
-                    </b-form-checkbox>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col>
                     <label>{{ $t('views.fenceDesigner.tabMain.tabPost.tabObject.height') }} ({{ heightCentimeters }} {{ $store.state.unitOfMeasure }}):</label>
                     <b-form-input v-model="tabObject.height" type="number" step="1" :placeholder="$t('views.fenceDesigner.tabMain.tabPost.tabObject.height')"></b-form-input>
                 </b-col>
                 <b-col>
                     <label>{{ $t('views.fenceDesigner.tabMain.tabPost.tabObject.width') }} ({{ widthCentimeters }} {{ $store.state.unitOfMeasure }}):</label>
                     <b-form-input v-model="tabObject.width" min="1" type="number" step="1" :placeholder="$t('views.fenceDesigner.tabMain.tabPost.tabObject.width')"></b-form-input>
+                </b-col>
+                <b-col>
+                    <label>{{ $t('views.fenceDesigner.tabMain.tabPost.tabObject.level') }}:</label>
+                    <b-form-input v-model="tabObject.level" min="0" type="number" step="1" :placeholder="$t('views.fenceDesigner.tabMain.tabPost.tabObject.level')"></b-form-input>
                 </b-col>
             </b-row>
         </b-col>
@@ -55,10 +48,10 @@ data () {
 },
 watch: {
     'tabObject.height': function () {
-        this.groupEdit(this.tabObject)
+        // this.groupEdit(this.tabObject)
     },
     'tabObject.width': function (val, oldVal) {
-        this.groupEdit(this.tabObject)
+        // this.groupEdit(this.tabObject)
 
         let allObjectsWidth = this.getAllObjectsWidthLocal()
         let sectionMaxWidth = this.getSectionMaxWidthLocal()

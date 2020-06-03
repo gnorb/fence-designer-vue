@@ -51,6 +51,7 @@ const pl = {
                 addGroupOfPostsAndSpans: 'Stwórz grupę słupków i przęseł',
                 group: 'Grupa',
                 tabGroup: {
+                    level: 'Poziom',
                     width: 'Szerokość grupy obiektów',
                     defaultFirstPost: 'Pierwszy słupek',
                     defaultPost: 'Słupki wewnętrzne',
@@ -67,23 +68,27 @@ const pl = {
                 },
                 tabPost: {
                     tabObject: {
+                        level: 'Poziom',
                         height: 'Wysokość słupka (w bloczkach, z daszkiem)',
                         width: 'Szerokość słupka (w bloczkach)'
                     }
                 },
                 tabSpan: {
                     tabObject: {
+                        level: 'Poziom',
                         height: 'Wysokość przęsła (w bloczkach, z daszkiem)',
                         width: 'Szerokość przęsła (w bloczkach)'
                     }
                 },
                 tabWicket: {
                     tabObject: {
+                        level: 'Poziom',
                         width: 'Szerokość furtki'
                     }
                 },
                 tabGate: {
                     tabObject: {
+                        level: 'Poziom',
                         width: 'Szerokość bramy'
                     }
                 }
