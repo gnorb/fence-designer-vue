@@ -126,14 +126,18 @@ export default {
             let buttonsToDisplay = []
             let typesToDisplay = []
             let lastIndex = this.tabs.length - 1
-            if (this.tabs.length === 0) {
-                typesToDisplay.push(4)
-            } else if (this.tabs[lastIndex].objectTypeId === 4) {
-                typesToDisplay.push(3)
+            // if (this.tabs.length === 0) {
+            //     typesToDisplay.push(4)
+            // } else if (this.tabs[lastIndex].objectTypeId === 4) {
+            //     typesToDisplay.push(3)
+            //     typesToDisplay.push(2)
+            //     typesToDisplay.push(1)
+            // } else {
+            //     typesToDisplay.push(4)
+            // }
+            if (this.tabs.length > 0 && this.tabs[lastIndex].type === 0) {
                 typesToDisplay.push(2)
                 typesToDisplay.push(1)
-            } else {
-                typesToDisplay.push(4)
             }
             for (let i in this.fdConfigurationObjects) {
                 if (typesToDisplay.includes(this.fdConfigurationObjects[i].objectType.id)) {
@@ -204,7 +208,7 @@ export default {
                     newObject.height = object.defaultHeight
                     newObject.brick = object.brick
                     newObject.roof = object.roof
-                    newTab.name = object.name
+                    newTab.name = this.$t(object.name)
                     newTab.type = object.objectType.id
                     newTab.objects.push(newObject)
                     break

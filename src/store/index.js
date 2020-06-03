@@ -14,7 +14,8 @@ export default new Vuex.Store({
       id: 0,
       username: '',
       roles: [],
-      email: ''
+      email: '',
+      expiration: ''
     },
     configuration: {
       canvas: {

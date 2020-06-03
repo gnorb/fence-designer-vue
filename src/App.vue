@@ -19,5 +19,7 @@ export default {
 </script>
 
 <style lang="sass">
+  @import '../node_modules/bootstrap/scss/bootstrap.scss'
+  /*@import './assets/sass/bootstrap/custom-vars.scss'*/
   @import './assets/sass/style.scss'
 </style>

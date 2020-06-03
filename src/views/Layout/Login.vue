@@ -69,12 +69,15 @@ export default {
             this.$axios
                 .post('/api/auth/login', data)
                 .then((response) => {
-                    this.$cookies.set('FD_APP_ACCESS_TOKEN', response.data.token)
-                    this.$cookies.set('FD_APP_USER_NAME', response.data.userdata.username)
+                    let secondsToExpire = this.$moment.unix(response.data.payload.exp).diff(this.$moment(), 'seconds')
+                    this.$cookies.set('FD_APP_ACCESS_TOKEN', response.data.token, secondsToExpire)
+                    this.$cookies.set('FD_APP_USER_NAME', response.data.userdata.username, secondsToExpire)
+                    this.$cookies.set('FD_APP_EXP_DATE', response.data.payload.exp, secondsToExpire)
                     this.$store.state.user.id = response.data.userdata.id
                     this.$store.state.user.username = response.data.userdata.username
                     this.$store.state.user.email = response.data.userdata.email
                     this.$store.state.user.roles = response.data.userdata.roles
+                    this.$store.state.user.expiration = response.data.payload.exp
                     this.$axios.defaults.headers.common = {
                         'Authorization': 'Bearer ' + VueCookies.get('FD_APP_ACCESS_TOKEN')
                     }

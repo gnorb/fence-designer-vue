@@ -179,7 +179,9 @@ const pl = {
         layout: {
             header: {
                 signOut: 'Wyloguj się',
-                profile: 'Profil'
+                profile: 'Profil',
+                autoLogOut1: 'Wylogowanie za',
+                autoLogOut2: 'min.'
             }
         },
         login: {
