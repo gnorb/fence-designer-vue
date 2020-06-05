@@ -23,29 +23,29 @@ function drawGridInsideObject(canvas, canvasHTML, globalSettings, previousObject
     for (let i = 0; i < parseInt(object.height); i++) {
         let brickHeight = parseInt(object.brick.height)
         let brickWidth = parseInt(object.brick.width)
-        bottom -= brickHeight
         let rowStart = point
         let rowStop = point + objectWidth
-        canvas.beginPath()
-        canvas.moveTo(rowStart, bottom)
-        canvas.lineTo(rowStop, bottom)
-        canvas.stroke()
+        if (i === 0) {
+            drawObjectHorizontalLine(canvas, rowStart, rowStop, bottom)
+        }
+        bottom -= brickHeight
+        drawObjectHorizontalLine(canvas, rowStart, rowStop, bottom)
 
         let left = point
         for (let j = 0; j <= (parseInt(object.width)); j++) {
             if (globalSettings.configurationId === 1) { // ogrodzenia splitowane
-                if (j === 0 && (previousObject === undefined || (previousObject && previousObject.height <= i))) {
+                if (j === 0 && (previousObject === undefined || (previousObject && ((parseInt(previousObject.level) + parseInt(previousObject.height)) <= i || (previousObject.level > i))))) {
                     // jeśli jest to pierwszy obiekt w ogrodzeniu, uzupełniam puste kreski od skrajnej krawędzi początka
                     drawObjectVerticalLine(canvas, left, bottom + brickHeight, bottom)
                 }
                 if (j === parseInt(object.width)) {
-                    if ((nextObject === undefined || (nextObject && nextObject.height <= i))) {
+                    if ((nextObject === undefined || (nextObject && ((parseInt(nextObject.level) + parseInt(nextObject.height)) <= i || (nextObject.level > i))))) {
                         drawObjectVerticalLine(canvas, left, bottom + brickHeight, bottom)
                     }
                 } else {
-                    if (isEven(i)) { // parzyste
+                    if (isEven(i - object.level)) { // parzyste
                         drawObjectVerticalLine(canvas, left + object.brick.widthLeft, bottom + brickHeight, bottom)
-                    }  else if (isOdd(i)) {
+                    }  else if (isOdd(i - object.level)) {
                         drawObjectVerticalLine(canvas, left + object.brick.widthRight, bottom + brickHeight, bottom)
                     }
                 }
@@ -65,6 +65,14 @@ function drawObjectVerticalLine (canvas, X, Y1, Y2) {
     canvas.lineTo(X, Y2)
     canvas.stroke()
 }
+
+function drawObjectHorizontalLine (canvas, X1, X2, Y) {
+    canvas.beginPath()
+    canvas.moveTo(X1, Y)
+    canvas.lineTo(X2, Y)
+    canvas.stroke()
+}
+
 
 function isEven(n) {
     return n % 2 == 0;
