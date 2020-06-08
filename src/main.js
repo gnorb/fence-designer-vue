@@ -12,7 +12,8 @@ import VueCookies from 'vue-cookies'
 import VueForm from 'vue-form'
 import { ClientTable} from 'vue-tables-2'
 import VTooltip from 'v-tooltip'
-import VueCountdown from '@chenfengyuan/vue-countdown';
+import VueCountdown from '@chenfengyuan/vue-countdown'
+import VueHtml2Canvas from 'vue-html2canvas'
 
 i18n.locale = 'pl'
 
@@ -26,6 +27,7 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(require('vue-cookies'))
 Vue.component(VueCountdown.name, VueCountdown)
+Vue.use(VueHtml2Canvas)
 
 // locale.use(lang) // to change if more languages will be available
 Vue.prototype.$lang = i18n

@@ -1,4 +1,5 @@
 const pl = {
+    createPDF: 'Generuj PDF',
     appName: 'DesignYourFence',
     null: 'Brak',
     send: 'Wyślij',
